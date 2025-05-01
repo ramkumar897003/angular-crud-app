@@ -11,12 +11,21 @@
   "roles": [
     {
       "name": "Admin",
-      "permissions": [1, 2, 3, 4, 5],
+      "permissions": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
       "id": 1
     },
     {
       "name": "User",
-      "permissions": [1, 5],
+      "permissions": [
+        1,
+        5
+      ],
       "id": 2
     }
   ],
