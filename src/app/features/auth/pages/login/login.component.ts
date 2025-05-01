@@ -1,0 +1,37 @@
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+})
+export class LoginComponent {
+  email = signal('');
+  password = signal('');
+  rememberMe = signal(false);
+  error = signal('');
+
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  onSubmit() {
+    this.error.set('');
+    this.authService
+      .login({ email: this.email(), password: this.password() })
+      .subscribe({
+        next: (response) => {
+          localStorage.setItem('token', response.accessToken);
+          this.router.navigate(['/']);
+        },
+        error: (error) => {
+          this.error.set(error.error || 'An error occurred during login');
+        },
+      });
+  }
+}

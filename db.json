@@ -1,0 +1,45 @@
+{
+  "users": [
+    {
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "password": "$2a$10$U9xwPokVKm1f9CGW7HGRReyUGbYuUlBNOQ3dXwWe1sM.v4S2xBvqa",
+      "id": 1,
+      "roleId": 1
+    }
+  ],
+  "roles": [
+    {
+      "name": "Admin",
+      "permissions": [1, 2, 3, 4, 5],
+      "id": 1
+    },
+    {
+      "name": "User",
+      "permissions": [1, 5],
+      "id": 2
+    }
+  ],
+  "permissions": [
+    {
+      "id": 1,
+      "name": "View User"
+    },
+    {
+      "id": 2,
+      "name": "Create User"
+    },
+    {
+      "id": 3,
+      "name": "Edit User"
+    },
+    {
+      "id": 4,
+      "name": "Delete User"
+    },
+    {
+      "id": 5,
+      "name": "View Role"
+    }
+  ]
+}
