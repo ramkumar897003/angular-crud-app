@@ -62,6 +62,7 @@
                                 </td>
                                 <td
                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                    @if(role.id !== 1) {
                                     <button (click)="openEditModal(role)"
                                         *ngIf="currentUser()?.permissions?.includes(rolePermissions.EDIT_ROLE)"
                                         class="text-indigo-600 hover:text-indigo-900 mr-4">
@@ -72,6 +73,7 @@
                                         class="text-red-600 hover:text-red-900">
                                         Delete
                                     </button>
+                                    }
                                 </td>
                             </tr>
                         </tbody>

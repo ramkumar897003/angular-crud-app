@@ -6,6 +6,20 @@
       "password": "$2a$10$U9xwPokVKm1f9CGW7HGRReyUGbYuUlBNOQ3dXwWe1sM.v4S2xBvqa",
       "id": 1,
       "roleId": 1
+    },
+    {
+      "email": "ramkumar897003@gmail.com",
+      "password": "$2a$10$mpa7wYlyfEtaYjJ.osF9ueNTIHFb5zBwB0.yL4Ik2OZ9OSFeUNekK",
+      "name": "Ram Kumar",
+      "roleId": 1,
+      "id": 2
+    },
+    {
+      "email": "tannubhamra@gmail.com",
+      "password": "$2a$10$p1sWOBdEzWjbitmKhmceN.LOqskta21VD9yWKgx9R710HzbOqBfTC",
+      "name": "Tannu",
+      "roleId": 1,
+      "id": 3
     }
   ],
   "roles": [

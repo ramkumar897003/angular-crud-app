@@ -106,7 +106,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               [class.border-red-500]="roleInput.invalid && roleInput.touched"
             >
               <option value="">Select a role</option>
-              <option *ngFor="let role of roles" [value]="role.id">
+              <option *ngFor="let role of roles" [ngValue]="role.id">
                 {{ role.name }}
               </option>
             </select>
