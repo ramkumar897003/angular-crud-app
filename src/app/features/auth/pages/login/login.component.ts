@@ -27,10 +27,11 @@ export class LoginComponent {
       .subscribe({
         next: (response) => {
           localStorage.setItem('token', response.accessToken);
+          this.authService.me().subscribe();
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.error.set(error.error || 'An error occurred during login');
+          this.error.set(error.message || 'An error occurred during login');
         },
       });
   }

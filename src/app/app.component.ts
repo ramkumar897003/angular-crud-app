@@ -15,6 +15,8 @@ export class AppComponent {
   private readonly authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.authService.me().subscribe();
+    if (this.authService.isAuthenticated()) {
+      this.authService.me().subscribe();
+    }
   }
 }

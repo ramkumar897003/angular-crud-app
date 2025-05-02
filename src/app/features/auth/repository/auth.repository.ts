@@ -36,7 +36,10 @@ export class AuthRepository implements IAuthRepository {
         }),
         catchError((error) => {
           const authError: AuthError = {
-            message: error.error?.message || 'An error occurred during login',
+            message:
+              error.error ||
+              error.error?.message ||
+              'An error occurred during login',
             status: error.status || 500,
           };
           return throwError(() => authError);
