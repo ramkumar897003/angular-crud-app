@@ -26,6 +26,14 @@ export const routes: Routes = [
     canActivate: [permissionsGuard, authGuard],
   },
   {
+    path: 'users',
+    loadChildren: () =>
+      import('./features/user-management/user-management.routing').then(
+        (m) => m.userManagementRoutes
+      ),
+    canActivate: [permissionsGuard, authGuard],
+  },
+  {
     path: '**',
     component: NotFoundComponent,
   },
