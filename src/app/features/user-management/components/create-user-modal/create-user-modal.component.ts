@@ -173,9 +173,13 @@ export class CreateUserModalComponent {
   }
 
   private checkEmailDuplicate(email: string) {
-    this.isEmailDuplicate = this.existingUsers.some(
-      (user) => user.email.toLowerCase() === email.toLowerCase()
-    );
+    if (email) {
+      this.userService
+        .checkEmailExists(email)
+        .subscribe((exists) => (this.isEmailDuplicate = exists));
+    } else {
+      this.isEmailDuplicate = false;
+    }
   }
 
   isFormValid(): boolean {

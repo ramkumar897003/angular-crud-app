@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { IUserRepository } from './user.repository.interface';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { User } from '../../auth/interfaces/auth.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -28,5 +28,11 @@ export class UserRepository implements IUserRepository {
 
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/users/${id}`);
+  }
+
+  checkEmailExists(email: string): Observable<boolean> {
+    return this.http
+      .get<User[]>(`${this.baseUrl}/users?email=${email}`)
+      .pipe(map((users) => users.length > 0));
   }
 }
