@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-delete-modal',
@@ -7,6 +13,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './delete-modal.component.html',
   styleUrl: './delete-modal.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteModalComponent {
   @Input() title = '';
