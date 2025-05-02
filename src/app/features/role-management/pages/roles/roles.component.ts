@@ -6,6 +6,7 @@ import { Permission, Role } from '../../interfaces/role.interface';
 import { CreateRoleModalComponent } from '../../components/create-role-modal/create-role-modal.component';
 import { EditRoleModalComponent } from '../../components/edit-role-modal/edit-role-modal.component';
 import { DeleteRoleModalComponent } from '../../components/delete-role-modal/delete-role-modal.component';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-role-management',
@@ -21,6 +22,7 @@ import { DeleteRoleModalComponent } from '../../components/delete-role-modal/del
 })
 export class RoleManagementComponent {
   private readonly roleService = inject(RoleService);
+  private readonly authService = inject(AuthService);
 
   roles = signal<Role[]>([]);
   permissions = signal<Permission[]>([]);
@@ -29,12 +31,22 @@ export class RoleManagementComponent {
   isEditModalOpen = signal(false);
   isDeleteModalOpen = signal(false);
   error = signal('');
-  roleName = '';
-  selectedPermissions: number[] = [];
+  roleName = signal('');
+  currentUserRoleId = signal<number>(0);
+  selectedPermissions = signal<number[]>([]);
 
   ngOnInit() {
     this.loadRoles();
     this.loadPermissions();
+    this.loadCurrentUser();
+  }
+
+  loadCurrentUser() {
+    const roleId = this.authService.getUserPermissions()?.roleId;
+
+    if (roleId) {
+      this.currentUserRoleId.set(roleId);
+    }
   }
 
   loadRoles() {
@@ -52,14 +64,14 @@ export class RoleManagementComponent {
   }
 
   openCreateModal() {
-    this.roleName = '';
-    this.selectedPermissions = [];
+    this.roleName.set('');
+    this.selectedPermissions.set([]);
     this.isCreateModalOpen.set(true);
   }
 
   openEditModal(role: Role) {
     this.selectedRole.set(role);
-    this.selectedPermissions = role.permissions.map((p) => p);
+    this.selectedPermissions.set(role.permissions.map((p) => p));
     console.log(this.selectedPermissions);
     this.isEditModalOpen.set(true);
   }
@@ -74,8 +86,8 @@ export class RoleManagementComponent {
     this.isEditModalOpen.set(false);
     this.isDeleteModalOpen.set(false);
     this.selectedRole.set(null);
-    this.roleName = '';
-    this.selectedPermissions = [];
+    this.roleName.set('');
+    this.selectedPermissions.set([]);
   }
 
   createRole(role: { name: string; permissions: number[] }) {
@@ -118,17 +130,5 @@ export class RoleManagementComponent {
       },
       error: (error) => this.error.set(error.message),
     });
-  }
-
-  onPermissionChange(event: Event, permissionId: number): void {
-    const checkbox = event.target as HTMLInputElement;
-    if (checkbox.checked) {
-      this.selectedPermissions.push(permissionId);
-    } else {
-      const index = this.selectedPermissions.indexOf(permissionId);
-      if (index > -1) {
-        this.selectedPermissions.splice(index, 1);
-      }
-    }
   }
 }

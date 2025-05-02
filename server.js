@@ -41,6 +41,7 @@ server.get("/me/:id", (req, res) => {
     name: user.name,
     email: user.email,
     id: user.id,
+    roleId: user.roleId,
     permissions: permissions,
   };
 
