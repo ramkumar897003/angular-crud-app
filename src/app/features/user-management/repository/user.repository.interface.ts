@@ -7,4 +7,5 @@ export interface IUserRepository {
   createUser(user: User): Observable<User>;
   updateUser(user: User): Observable<User>;
   deleteUser(id: number): Observable<void>;
+  checkEmailExists(email: string): Observable<boolean>;
 }

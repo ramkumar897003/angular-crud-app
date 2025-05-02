@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { UserRepository } from '../repository/user.repository';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { User } from '../../auth/interfaces/auth.interface';
 import { IUserRepository } from '../repository/user.repository.interface';
 @Injectable({
@@ -27,5 +27,14 @@ export class UserService {
 
   deleteUser(id: number): Observable<void> {
     return this.userRepository.deleteUser(id);
+  }
+
+  checkEmailExists(name: string): Observable<boolean> {
+    return this.userRepository.checkEmailExists(name).pipe(
+      catchError((error) => {
+        console.error('Error checking role name:', error);
+        return throwError(() => new Error('Failed to check role name'));
+      })
+    );
   }
 }
