@@ -36,9 +36,5 @@ export class SidebarComponent {
   ];
 
   private authService = inject(AuthService);
-  userPermissions = signal<UserPermissions | null>(null);
-
-  constructor() {
-    this.userPermissions.set(this.authService.getUserPermissions());
-  }
+  userPermissions = this.authService.userPermissions;
 }

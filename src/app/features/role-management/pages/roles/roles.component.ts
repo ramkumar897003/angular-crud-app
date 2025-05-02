@@ -7,6 +7,10 @@ import { CreateRoleModalComponent } from '../../components/create-role-modal/cre
 import { EditRoleModalComponent } from '../../components/edit-role-modal/edit-role-modal.component';
 import { DeleteRoleModalComponent } from '../../components/delete-role-modal/delete-role-modal.component';
 import { AuthService } from '../../../auth/services/auth.service';
+import { UserPermissions } from '../../../auth/interfaces/auth.interface';
+import { RolePermissions } from '../../../../shared/enums';
+import { Router } from '@angular/router';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-role-management',
@@ -23,8 +27,10 @@ import { AuthService } from '../../../auth/services/auth.service';
 export class RoleManagementComponent {
   private readonly roleService = inject(RoleService);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   roles = signal<Role[]>([]);
+  rolesCount = signal(0);
   permissions = signal<Permission[]>([]);
   selectedRole = signal<Role | null>(null);
   isCreateModalOpen = signal(false);
@@ -32,26 +38,21 @@ export class RoleManagementComponent {
   isDeleteModalOpen = signal(false);
   error = signal('');
   roleName = signal('');
-  currentUserRoleId = signal<number>(0);
   selectedPermissions = signal<number[]>([]);
+  rolePermissions = RolePermissions;
+  currentUser = this.authService.userPermissions;
 
   ngOnInit() {
     this.loadRoles();
     this.loadPermissions();
-    this.loadCurrentUser();
-  }
-
-  loadCurrentUser() {
-    const roleId = this.authService.getUserPermissions()?.roleId;
-
-    if (roleId) {
-      this.currentUserRoleId.set(roleId);
-    }
   }
 
   loadRoles() {
     this.roleService.getRoles().subscribe({
-      next: (roles) => this.roles.set(roles),
+      next: (roles) => {
+        this.roles.set(roles);
+        this.rolesCount.set(roles.length);
+      },
       error: (error) => this.error.set(error.message),
     });
   }
@@ -109,8 +110,14 @@ export class RoleManagementComponent {
       })
       .subscribe({
         next: () => {
-          this.loadRoles();
-          this.closeModals();
+          this.checkIfCurrentRoutePermitted().subscribe((isAllowed) => {
+            if (!isAllowed) {
+              this.router.navigateByUrl('/');
+            } else {
+              this.loadRoles();
+              this.closeModals();
+            }
+          });
         },
         error: (error) => {
           console.error('Error updating role:', error);
@@ -129,5 +136,13 @@ export class RoleManagementComponent {
       },
       error: (error) => this.error.set(error.message),
     });
+  }
+
+  checkIfCurrentRoutePermitted(): Observable<boolean> {
+    return this.authService
+      .me()
+      .pipe(
+        map((user) => user.permissions.includes(RolePermissions.VIEW_ROLE))
+      );
   }
 }

@@ -2,10 +2,13 @@
     <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
             <h1 class="text-2xl font-semibold text-gray-900">Roles</h1>
-            <p class="mt-2 text-sm text-gray-700">A list of all roles in your application.</p>
+            <p class="mt-2 text-sm text-gray-700">A list of all roles in your application. Total roles: {{ rolesCount()
+                }}
+            </p>
         </div>
         <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-            <button (click)="openCreateModal()"
+            <button *ngIf="currentUser()?.permissions?.includes(rolePermissions.CREATE_ROLE)"
+                (click)="openCreateModal()"
                 class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
                 Create New Role
             </button>
@@ -60,10 +63,13 @@
                                 <td
                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                     <button (click)="openEditModal(role)"
+                                        *ngIf="currentUser()?.permissions?.includes(rolePermissions.EDIT_ROLE)"
                                         class="text-indigo-600 hover:text-indigo-900 mr-4">
                                         Edit
                                     </button>
-                                    <button (click)="openDeleteModal(role)" class="text-red-600 hover:text-red-900">
+                                    <button (click)="openDeleteModal(role)"
+                                        *ngIf="currentUser()?.permissions?.includes(rolePermissions.DELETE_ROLE)"
+                                        class="text-red-600 hover:text-red-900">
                                         Delete
                                     </button>
                                 </td>
@@ -87,6 +93,6 @@
 
     <!-- Delete Role Modal -->
     <app-delete-role-modal *ngIf="isDeleteModalOpen()" [role]="selectedRole()" (delete)="deleteRole()"
-        (cancel)="closeModals()" [currentUserRoleId]="currentUserRoleId()">
+        (cancel)="closeModals()" [currentUserRoleId]="currentUser()?.roleId">
     </app-delete-role-modal>
 </div>

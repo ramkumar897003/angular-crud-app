@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -18,7 +18,11 @@ import { jwtDecode } from 'jwt-decode';
 export class AuthRepository implements IAuthRepository {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
-  private readonly userPermissions = signal<UserPermissions | null>(null);
+  private _userPermissions = signal<UserPermissions | null>(null);
+
+  get userPermissions(): WritableSignal<UserPermissions | null> {
+    return this._userPermissions;
+  }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http
@@ -53,7 +57,7 @@ export class AuthRepository implements IAuthRepository {
   }
 
   getUserPermissions(): UserPermissions | null {
-    return this.userPermissions();
+    return this._userPermissions();
   }
 
   me(): Observable<UserPermissions> {
@@ -65,7 +69,7 @@ export class AuthRepository implements IAuthRepository {
       .get<UserPermissions>(`${this.baseUrl}/me/${payload.sub}`)
       .pipe(
         map((user) => {
-          this.userPermissions.set(user);
+          this._userPermissions.set(user);
           return user;
         })
       );

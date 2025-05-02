@@ -9,6 +9,7 @@ import { DeleteUserModalComponent } from '../../components/delete-user-modal/del
 import { CreateUserModalComponent } from '../../components/create-user-modal/create-user-modal.component';
 import { EditUserModalComponent } from '../../components/edit-user-modal/edit-user-modal.component';
 import { RoleService } from '../../../role-management/services/role.service';
+import { RolePermissions } from '../../../../shared/enums';
 
 @Component({
   selector: 'app-users',
@@ -24,6 +25,10 @@ import { RoleService } from '../../../role-management/services/role.service';
   styleUrl: './users.component.css',
 })
 export class UsersComponent implements OnInit {
+  private userService = inject(UserService);
+  private roleService = inject(RoleService);
+  private readonly authService = inject(AuthService);
+
   users = signal<User[]>([]);
   userCount = signal(0);
   roles = signal<Role[]>([]);
@@ -32,20 +37,12 @@ export class UsersComponent implements OnInit {
   isDeleteModalOpen = signal(false);
   selectedUser = signal<User | null>(null);
   error = signal('');
-  userPermissions = signal<UserPermissions | null>(null);
-
-  private userService = inject(UserService);
-  private roleService = inject(RoleService);
-  private readonly authService = inject(AuthService);
+  rolePermissions = RolePermissions;
+  currentUser = this.authService.userPermissions;
 
   ngOnInit() {
     this.loadUsers();
     this.loadRoles();
-    this.loadCurrentUser();
-  }
-
-  loadCurrentUser() {
-    this.userPermissions.set(this.authService.getUserPermissions());
   }
 
   loadUsers() {
