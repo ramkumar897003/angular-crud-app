@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../auth/interfaces/auth.interface';
@@ -9,6 +16,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
   selector: 'app-edit-user-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, ModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal title="Edit User">
       <form (ngSubmit)="onSubmit()" class="mt-4">
@@ -86,7 +94,10 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               [class.border-red-500]="roleInput.invalid && roleInput.touched"
             >
               <option value="">Select a role</option>
-              <option *ngFor="let role of roles" [value]="role.id">
+              <option
+                *ngFor="let role of roles; trackBy: trackById"
+                [ngValue]="role.id"
+              >
                 {{ role.name }}
               </option>
             </select>
@@ -132,17 +143,17 @@ export class EditUserModalComponent {
   }>();
   @Output() cancel = new EventEmitter<void>();
 
-  fullName = '';
-  password = '';
-  selectedRoleId: number | null = null;
+  fullName = signal('');
+  password = signal('');
+  selectedRoleId = signal<number | null>(null);
 
   ngOnInit() {
-    this.fullName = this.user.name;
-    this.selectedRoleId = this.user.roleId;
+    this.fullName.set(this.user.name);
+    this.selectedRoleId.set(this.user.roleId);
   }
 
   isFormValid(): boolean {
-    return !!this.fullName && !!this.selectedRoleId;
+    return !!this.fullName() && !!this.selectedRoleId();
   }
 
   onSubmit() {
@@ -150,10 +161,14 @@ export class EditUserModalComponent {
 
     this.update.emit({
       id: this.user.id,
-      fullName: this.fullName,
-      password: this.password || undefined,
-      roleId: this.selectedRoleId!,
+      fullName: this.fullName(),
+      password: this.password() || undefined,
+      roleId: this.selectedRoleId()!,
     });
+  }
+
+  trackById(_index: number, item: Role): number {
+    return item.id;
   }
 
   onCancel() {

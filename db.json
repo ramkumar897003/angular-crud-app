@@ -9,17 +9,10 @@
     },
     {
       "email": "ramkumar897003@gmail.com",
-      "password": "$2a$10$mpa7wYlyfEtaYjJ.osF9ueNTIHFb5zBwB0.yL4Ik2OZ9OSFeUNekK",
+      "password": "$2a$10$rhy/Y.H3yKdkZPvTaY4fpupGC4x3DEqiFl1/d.IWwNJfFPzuFz3J2",
       "name": "Ram Kumar",
       "roleId": 1,
       "id": 2
-    },
-    {
-      "email": "tannubhamra@gmail.com",
-      "password": "$2a$10$p1sWOBdEzWjbitmKhmceN.LOqskta21VD9yWKgx9R710HzbOqBfTC",
-      "name": "Tannu",
-      "roleId": 1,
-      "id": 3
     }
   ],
   "roles": [

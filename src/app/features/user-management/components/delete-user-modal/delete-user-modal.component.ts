@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../auth/interfaces/auth.interface';
 import { DeleteModalComponent } from '../../../../shared/components/delete-modal/delete-modal.component';
@@ -7,6 +13,7 @@ import { DeleteModalComponent } from '../../../../shared/components/delete-modal
   selector: 'app-delete-user-modal',
   standalone: true,
   imports: [CommonModule, DeleteModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-delete-modal
       title="Delete User"

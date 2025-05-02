@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
@@ -11,6 +19,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
   selector: 'app-create-user-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, ModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal title="Create New User">
       <form (ngSubmit)="onSubmit()" class="mt-4">
@@ -29,7 +38,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               (input)="onEmailInput()"
               class="p-3 mt-1 block w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               [class.border-red-500]="
-                (emailInput.invalid && emailInput.touched) || isEmailDuplicate
+                (emailInput.invalid && emailInput.touched) || isEmailDuplicate()
               "
             />
             <div
@@ -38,7 +47,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
             >
               Email is required
             </div>
-            <div *ngIf="isEmailDuplicate" class="mt-1 text-sm text-red-600">
+            <div *ngIf="isEmailDuplicate()" class="mt-1 text-sm text-red-600">
               This email is already taken
             </div>
           </div>
@@ -106,7 +115,10 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               [class.border-red-500]="roleInput.invalid && roleInput.touched"
             >
               <option value="">Select a role</option>
-              <option *ngFor="let role of roles" [ngValue]="role.id">
+              <option
+                *ngFor="let role of roles; trackBy: trackById"
+                [ngValue]="role.id"
+              >
                 {{ role.name }}
               </option>
             </select>
@@ -154,11 +166,11 @@ export class CreateUserModalComponent {
   }>();
   @Output() cancel = new EventEmitter<void>();
 
-  email = '';
-  fullName = '';
-  password = '';
-  selectedRoleId: number | null = null;
-  isEmailDuplicate = false;
+  email = signal('');
+  fullName = signal('');
+  password = signal('');
+  selectedRoleId = signal<number | null>(null);
+  isEmailDuplicate = signal(false);
 
   constructor() {
     this.emailValidationSubject
@@ -168,27 +180,31 @@ export class CreateUserModalComponent {
       });
   }
 
+  trackById(_index: number, item: Role): number {
+    return item.id;
+  }
+
   onEmailInput() {
-    this.emailValidationSubject.next(this.email);
+    this.emailValidationSubject.next(this.email());
   }
 
   private checkEmailDuplicate(email: string) {
     if (email) {
       this.userService
         .checkEmailExists(email)
-        .subscribe((exists) => (this.isEmailDuplicate = exists));
+        .subscribe((exists) => this.isEmailDuplicate.set(exists));
     } else {
-      this.isEmailDuplicate = false;
+      this.isEmailDuplicate.set(false);
     }
   }
 
   isFormValid(): boolean {
     return (
-      !!this.email &&
-      !!this.fullName &&
-      !!this.password &&
-      !!this.selectedRoleId &&
-      !this.isEmailDuplicate
+      !!this.email() &&
+      !!this.fullName() &&
+      !!this.password() &&
+      !!this.selectedRoleId() &&
+      !this.isEmailDuplicate()
     );
   }
 
@@ -196,10 +212,10 @@ export class CreateUserModalComponent {
     if (!this.isFormValid()) return;
 
     this.create.emit({
-      email: this.email,
-      fullName: this.fullName,
-      password: this.password,
-      roleId: this.selectedRoleId!,
+      email: this.email(),
+      fullName: this.fullName(),
+      password: this.password(),
+      roleId: this.selectedRoleId()!,
     });
   }
 

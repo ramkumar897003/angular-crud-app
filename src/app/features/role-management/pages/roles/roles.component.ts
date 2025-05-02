@@ -57,6 +57,10 @@ export class RoleManagementComponent {
     });
   }
 
+  trackById(_index: number, item: Role): number {
+    return item.id;
+  }
+
   loadPermissions() {
     this.roleService.getPermissions().subscribe({
       next: (permissions) => this.permissions.set(permissions),

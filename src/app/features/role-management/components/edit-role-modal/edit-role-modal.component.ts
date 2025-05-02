@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Permission, Role } from '../../interfaces/role.interface';
@@ -8,6 +15,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
   selector: 'app-edit-role-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, ModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal [title]="'Edit Role: ' + role?.name">
       <form (ngSubmit)="onSubmit()" class="mt-4">
@@ -18,12 +26,12 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
             >
             <div class="mt-2 space-y-2">
               <div
-                *ngFor="let permission of permissions"
+                *ngFor="let permission of permissions; trackBy: trackById"
                 class="flex items-center"
               >
                 <input
                   type="checkbox"
-                  [checked]="selectedPermissions.includes(permission.id)"
+                  [checked]="selectedPermissions().includes(permission.id)"
                   [value]="permission.id"
                   (change)="onPermissionChange($event, permission.id)"
                   id="permission-{{ permission.id }}"
@@ -67,27 +75,34 @@ export class EditRoleModalComponent {
   @Output() update = new EventEmitter<{ permissions: number[] }>();
   @Output() cancel = new EventEmitter<void>();
 
-  selectedPermissions: number[] = [];
+  selectedPermissions = signal<number[]>([]);
 
   ngOnChanges(): void {
     if (this.role) {
-      this.selectedPermissions = this.role.permissions.map((p) => p);
+      this.selectedPermissions.set(this.role.permissions.map((p) => p));
     }
+  }
+
+  trackById(_index: number, item: Permission): number {
+    return item.id;
   }
 
   onPermissionChange(event: Event, permissionId: number): void {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
-      this.selectedPermissions = [...this.selectedPermissions, permissionId];
+      this.selectedPermissions.set([
+        ...this.selectedPermissions(),
+        permissionId,
+      ]);
     } else {
-      this.selectedPermissions = this.selectedPermissions.filter(
-        (id) => id !== permissionId
+      this.selectedPermissions.set(
+        this.selectedPermissions().filter((id) => id !== permissionId)
       );
     }
   }
 
   onSubmit(): void {
-    this.update.emit({ permissions: this.selectedPermissions });
+    this.update.emit({ permissions: this.selectedPermissions() });
   }
 
   onCancel(): void {
