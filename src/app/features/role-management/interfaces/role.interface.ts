@@ -6,7 +6,6 @@ export interface Permission {
 export interface Role {
   id: number;
   name: string;
-  userCount: number;
   permissions: number[];
 }
 

@@ -46,9 +46,11 @@ import { Role } from '../../interfaces/role.interface';
                     Are you sure you want to delete the role "{{ role?.name }}"?
                     This action cannot be undone.
                   </p>
-                  <p *ngIf="role?.userCount" class="mt-2 text-sm text-red-600">
-                    Warning: This role is assigned to
-                    {{ role?.userCount }} users. You cannot delete it.
+                  <p
+                    *ngIf="role?.id === currentUserRoleId"
+                    class="mt-2 text-sm text-red-600"
+                  >
+                    Warning: This role is assigned to you. You cannot delete it.
                   </p>
                 </div>
               </div>
@@ -57,7 +59,7 @@ import { Role } from '../../interfaces/role.interface';
               <button
                 type="button"
                 (click)="onDelete()"
-                [disabled]="role?.userCount"
+                [disabled]="role?.id === currentUserRoleId"
                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Delete
@@ -78,6 +80,7 @@ import { Role } from '../../interfaces/role.interface';
 })
 export class DeleteRoleModalComponent {
   @Input() role: Role | null = null;
+  @Input() currentUserRoleId!: number;
   @Output() delete = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 

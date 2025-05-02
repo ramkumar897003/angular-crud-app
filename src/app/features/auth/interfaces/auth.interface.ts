@@ -18,17 +18,16 @@ export interface AuthError {
   status: number;
 }
 
-export interface User {
+interface BaseUser {
   id: number;
   email: string;
   name: string;
-  password: string;
   roleId: number;
 }
+export interface User extends BaseUser {
+  password: string;
+}
 
-export interface UserPermissions {
-  id: number;
-  email: string;
-  name: string;
+export interface UserPermissions extends BaseUser {
   permissions: string[];
 }

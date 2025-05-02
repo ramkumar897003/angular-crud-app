@@ -41,8 +41,6 @@
                                 </th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                     Permissions</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Users
-                                </th>
                                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                     <span class="sr-only">Actions</span>
                                 </th>
@@ -58,9 +56,6 @@
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     {{ role.permissions.length }} permissions
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    {{ role.userCount || 0 }} users
                                 </td>
                                 <td
                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
@@ -92,6 +87,6 @@
 
     <!-- Delete Role Modal -->
     <app-delete-role-modal *ngIf="isDeleteModalOpen()" [role]="selectedRole()" (delete)="deleteRole()"
-        (cancel)="closeModals()">
+        (cancel)="closeModals()" [currentUserRoleId]="currentUserRoleId()">
     </app-delete-role-modal>
 </div>
