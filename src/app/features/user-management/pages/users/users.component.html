@@ -7,6 +7,7 @@
         </div>
         <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
             <button (click)="openCreateModal()"
+                *ngIf="currentUser()?.permissions?.includes(rolePermissions.CREATE_USER)"
                 class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
                 Create New User
             </button>
@@ -61,13 +62,15 @@
                                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                     <button (click)="openEditModal(user)"
                                         class="text-indigo-600 hover:text-indigo-900 mr-4"
-                                        [ngClass]="{'cursor-not-allowed': userPermissions()?.id === user.id}"
-                                        [attr.disabled]="userPermissions()?.id === user.id ? 'disabled' : null">
+                                        [ngClass]="{'cursor-not-allowed': currentUser()?.id === user.id}"
+                                        [attr.disabled]="currentUser()?.id === user.id ? 'disabled' : null"
+                                        *ngIf="currentUser()?.permissions?.includes(rolePermissions.EDIT_USER)">
                                         Edit
                                     </button>
                                     <button (click)="openDeleteModal(user)" class="text-red-600 hover:text-red-900"
-                                        [ngClass]="{'cursor-not-allowed': userPermissions()?.id === user.id}"
-                                        [attr.disabled]="userPermissions()?.id === user.id ? 'disabled' : null">
+                                        [ngClass]="{'cursor-not-allowed': currentUser()?.id === user.id}"
+                                        [attr.disabled]="currentUser()?.id === user.id ? 'disabled' : null"
+                                        *ngIf="currentUser()?.permissions?.includes(rolePermissions.DELETE_USER)">
                                         Delete
                                     </button>
                                 </td>

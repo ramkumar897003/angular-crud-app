@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Signal, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthRepository } from '../repository/auth.repository';
 import { IAuthRepository } from '../repository/auth.repository.interface';
@@ -13,6 +13,9 @@ import {
 })
 export class AuthService {
   private readonly authRepository = inject<IAuthRepository>(AuthRepository);
+
+  userPermissions: Signal<UserPermissions | null> =
+    this.authRepository.userPermissions;
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.authRepository.login(credentials);

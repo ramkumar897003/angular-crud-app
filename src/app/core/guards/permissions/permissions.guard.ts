@@ -2,6 +2,7 @@ import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { of } from 'rxjs';
+import { RolePermissions } from '../../../shared/enums';
 
 export const permissionsGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot
@@ -9,8 +10,8 @@ export const permissionsGuard: CanActivateFn = (
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  const permissions = authService.getUserPermissions();
-  if (!permissions) {
+  const userPermissions = authService.getUserPermissions();
+  if (!userPermissions) {
     router.navigate(['/auth/login']);
     return of(false);
   }
@@ -20,16 +21,17 @@ export const permissionsGuard: CanActivateFn = (
 
   switch (path) {
     case 'roles':
-      requiredPermission = 'View Role';
+      requiredPermission = RolePermissions.VIEW_ROLE;
       break;
     case 'users':
-      requiredPermission = 'View User';
+      requiredPermission = RolePermissions.VIEW_USER;
       break;
     default:
-      requiredPermission = 'View User';
+      requiredPermission = RolePermissions.VIEW_USER;
   }
 
-  const hasPermission = permissions.permissions.includes(requiredPermission);
+  const hasPermission =
+    userPermissions.permissions.includes(requiredPermission);
 
   if (!hasPermission) {
     router.navigate(['/']);

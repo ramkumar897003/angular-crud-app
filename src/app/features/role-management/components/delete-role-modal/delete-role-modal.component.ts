@@ -28,7 +28,7 @@ import { DeleteModalComponent } from '../../../../shared/components/delete-modal
 })
 export class DeleteRoleModalComponent {
   @Input() role: Role | null = null;
-  @Input() currentUserRoleId!: number;
+  @Input() currentUserRoleId!: number | undefined;
   @Output() delete = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 

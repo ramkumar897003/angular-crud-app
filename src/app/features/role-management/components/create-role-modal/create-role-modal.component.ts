@@ -113,14 +113,18 @@ export class CreateRoleModalComponent {
     this.nameValidationSubject
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((name) => {
-        if (name) {
-          this.roleService
-            .checkRoleNameExists(name)
-            .subscribe((exists) => (this.isNameDuplicate = exists));
-        } else {
-          this.isNameDuplicate = false;
-        }
+        this.checkNameDuplicate(name);
       });
+  }
+
+  checkNameDuplicate(name: string) {
+    if (name) {
+      this.roleService
+        .checkRoleNameExists(name)
+        .subscribe((exists) => (this.isNameDuplicate = exists));
+    } else {
+      this.isNameDuplicate = false;
+    }
   }
 
   onRoleNameInput(): void {
