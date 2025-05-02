@@ -55,6 +55,10 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  trackById(_index: number, item: User): number {
+    return item.id;
+  }
+
   loadRoles() {
     this.roleService.getRoles().subscribe({
       next: (roles: Role[]) => this.roles.set(roles),

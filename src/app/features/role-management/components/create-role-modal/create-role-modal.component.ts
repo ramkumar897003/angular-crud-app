@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Permission, Role } from '../../interfaces/role.interface';
@@ -10,6 +18,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
   selector: 'app-create-role-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, ModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal title="Create New Role">
       <form (ngSubmit)="onSubmit()" class="mt-4">
@@ -31,7 +40,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               class="p-3 mt-1 block w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               [class.border-red-500]="
                 (roleNameInput.invalid && roleNameInput.touched) ||
-                isNameDuplicate
+                isNameDuplicate()
               "
             />
             <div
@@ -40,7 +49,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
             >
               Role name is required
             </div>
-            <div *ngIf="isNameDuplicate" class="mt-1 text-sm text-red-600">
+            <div *ngIf="isNameDuplicate()" class="mt-1 text-sm text-red-600">
               A role with this name already exists
             </div>
           </div>
@@ -50,14 +59,14 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
             >
             <div class="mt-2 space-y-2">
               <div
-                *ngFor="let permission of permissions"
+                *ngFor="let permission of permissions; trackBy: trackById"
                 class="flex items-center"
               >
                 <input
                   type="checkbox"
                   [id]="'permission-' + permission.id"
                   [value]="permission.id"
-                  [checked]="selectedPermissions.includes(permission.id)"
+                  [checked]="selectedPermissions().includes(permission.id)"
                   (change)="onPermissionChange($event, permission.id)"
                   class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                 />
@@ -76,7 +85,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
         >
           <button
             type="submit"
-            [disabled]="!roleNameInput.valid || isNameDuplicate"
+            [disabled]="!roleNameInput.valid || isNameDuplicate()"
             class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Save
@@ -105,9 +114,9 @@ export class CreateRoleModalComponent {
   }>();
   @Output() cancel = new EventEmitter<void>();
 
-  roleName = '';
-  selectedPermissions: number[] = [];
-  isNameDuplicate = false;
+  roleName = signal('');
+  selectedPermissions = signal<number[]>([]);
+  isNameDuplicate = signal(false);
 
   constructor() {
     this.nameValidationSubject
@@ -117,36 +126,43 @@ export class CreateRoleModalComponent {
       });
   }
 
+  trackById(_index: number, item: Permission): number {
+    return item.id;
+  }
+
   checkNameDuplicate(name: string) {
     if (name) {
       this.roleService
         .checkRoleNameExists(name)
-        .subscribe((exists) => (this.isNameDuplicate = exists));
+        .subscribe((exists) => this.isNameDuplicate.set(exists));
     } else {
-      this.isNameDuplicate = false;
+      this.isNameDuplicate.set(false);
     }
   }
 
   onRoleNameInput(): void {
-    this.nameValidationSubject.next(this.roleName);
+    this.nameValidationSubject.next(this.roleName());
   }
 
   onPermissionChange(event: Event, permissionId: number): void {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
-      this.selectedPermissions = [...this.selectedPermissions, permissionId];
+      this.selectedPermissions.set([
+        ...this.selectedPermissions(),
+        permissionId,
+      ]);
     } else {
-      this.selectedPermissions = this.selectedPermissions.filter(
-        (id) => id !== permissionId
+      this.selectedPermissions.set(
+        this.selectedPermissions().filter((id) => id !== permissionId)
       );
     }
   }
 
   onSubmit(): void {
-    if (!this.isNameDuplicate) {
+    if (!this.isNameDuplicate()) {
       this.create.emit({
-        name: this.roleName,
-        permissions: this.selectedPermissions,
+        name: this.roleName(),
+        permissions: this.selectedPermissions(),
       });
     }
   }

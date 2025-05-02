@@ -2,8 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../features/auth/services/auth.service';
-import { UserPermissions } from '../../../features/auth/interfaces/auth.interface';
-
 interface MenuItem {
   path: string;
   label: string;
