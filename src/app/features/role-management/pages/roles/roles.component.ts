@@ -72,7 +72,6 @@ export class RoleManagementComponent {
   openEditModal(role: Role) {
     this.selectedRole.set(role);
     this.selectedPermissions.set(role.permissions.map((p) => p));
-    console.log(this.selectedPermissions);
     this.isEditModalOpen.set(true);
   }
 
