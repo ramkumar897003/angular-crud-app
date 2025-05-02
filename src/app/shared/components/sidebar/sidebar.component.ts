@@ -7,6 +7,7 @@ import {
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../features/auth/services/auth.service';
+import { MenuService } from '../../services/menu/menu.service';
 interface MenuItem {
   path: string;
   label: string;
@@ -39,6 +40,13 @@ export class SidebarComponent {
     },
   ];
 
-  private authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
+  private readonly menuService = inject(MenuService);
+
   userPermissions = this.authService.userPermissions;
+  isMobileMenuOpen = this.menuService.isMobileMenuOpen;
+
+  toggleMobileMenu() {
+    this.menuService.toggleMenu();
+  }
 }
