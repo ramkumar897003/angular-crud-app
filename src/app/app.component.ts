@@ -10,8 +10,6 @@ import { AuthService } from './features/auth/services/auth.service';
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'angular-crud-app';
-
   private readonly authService = inject(AuthService);
 
   ngOnInit(): void {
