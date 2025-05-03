@@ -27,8 +27,14 @@ export class LoginComponent {
       .subscribe({
         next: (response) => {
           localStorage.setItem('token', response.accessToken);
-          this.authService.me().subscribe();
-          this.router.navigate(['/']);
+          this.authService.me().subscribe({
+            next: () => {
+              this.router.navigate(['/']);
+            },
+            error: (error) => {
+              this.error.set(error.message || 'Failed to get user data');
+            },
+          });
         },
         error: (error) => {
           this.error.set(error.message || 'An error occurred during login');
