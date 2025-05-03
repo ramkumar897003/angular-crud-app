@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { IRoleRepository } from '../repository/role.repository.interface';
 import {
   Role,
