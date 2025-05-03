@@ -1,18 +1,18 @@
 {
   "users": [
     {
-      "name": "John Doe",
       "email": "john.doe@example.com",
-      "password": "$2a$10$U9xwPokVKm1f9CGW7HGRReyUGbYuUlBNOQ3dXwWe1sM.v4S2xBvqa",
-      "id": 1,
-      "roleId": 1
+      "password": "$2a$10$rhy/Y.H3yKdkZPvTaY4fpupGC4x3DEqiFl1/d.IWwNJfFPzuFz3J2",
+      "name": "John Doe",
+      "roleId": 1,
+      "id": 2
     },
     {
       "email": "ramkumar897003@gmail.com",
-      "password": "$2a$10$rhy/Y.H3yKdkZPvTaY4fpupGC4x3DEqiFl1/d.IWwNJfFPzuFz3J2",
+      "password": "$2a$10$MwHGeBpmz0/HgrY3EvglwOxZ5UEFppSPpoJ7S8QAjDYk2hWAqsJ5W",
       "name": "Ram Kumar",
-      "roleId": 1,
-      "id": 2
+      "roleId": 2,
+      "id": 3
     }
   ],
   "roles": [
@@ -32,10 +32,7 @@
     },
     {
       "name": "User",
-      "permissions": [
-        1,
-        5
-      ],
+      "permissions": [],
       "id": 2
     }
   ],
