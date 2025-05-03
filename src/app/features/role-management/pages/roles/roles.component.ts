@@ -7,7 +7,6 @@ import { CreateRoleModalComponent } from '../../components/create-role-modal/cre
 import { EditRoleModalComponent } from '../../components/edit-role-modal/edit-role-modal.component';
 import { DeleteRoleModalComponent } from '../../components/delete-role-modal/delete-role-modal.component';
 import { AuthService } from '../../../auth/services/auth.service';
-import { UserPermissions } from '../../../auth/interfaces/auth.interface';
 import { RolePermissions } from '../../../../shared/enums';
 import { Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
@@ -24,7 +23,7 @@ import { map, Observable } from 'rxjs';
   ],
   templateUrl: './roles.component.html',
 })
-export class RoleManagementComponent {
+export class RolesComponent {
   private readonly roleService = inject(RoleService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
