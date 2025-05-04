@@ -18,7 +18,16 @@
   "roles": [
     {
       "name": "Super Admin",
-      "permissions": [3, 4, 5, 6, 7, 8, 1, 2],
+      "permissions": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        1,
+        2
+      ],
       "id": 1
     },
     {

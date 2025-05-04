@@ -58,10 +58,9 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               >Permissions</label
             >
             <div class="mt-2 space-y-2">
-              <div
-                *ngFor="let permission of permissions; trackBy: trackById"
-                class="flex items-center"
-              >
+              @for (permission of permissions; track permission.id; let i =
+              $index) {
+              <div class="flex items-center">
                 <input
                   type="checkbox"
                   [id]="'permission-' + permission.id"
@@ -77,6 +76,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
                   {{ permission.name }}
                 </label>
               </div>
+              }
             </div>
           </div>
         </div>
@@ -124,10 +124,6 @@ export class CreateRoleModalComponent {
       .subscribe((name) => {
         this.checkNameDuplicate(name);
       });
-  }
-
-  trackById(_index: number, item: Permission): number {
-    return item.id;
   }
 
   checkNameDuplicate(name: string) {

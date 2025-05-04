@@ -216,10 +216,4 @@ describe('RolesComponent', () => {
       expect(component.error()).toBe('Failed to create role');
     });
   });
-
-  describe('trackById', () => {
-    it('should return role id for tracking', () => {
-      expect(component.trackById(0, mockRole)).toBe(mockRole.id);
-    });
-  });
 });

@@ -115,12 +115,11 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               [class.border-red-500]="roleInput.invalid && roleInput.touched"
             >
               <option value="">Select a role</option>
-              <option
-                *ngFor="let role of roles; trackBy: trackById"
-                [ngValue]="role.id"
-              >
+              @for (role of roles; track role.id; let i = $index) {
+              <option [ngValue]="role.id">
                 {{ role.name }}
               </option>
+              }
             </select>
             <div
               *ngIf="roleInput.invalid && roleInput.touched"
@@ -178,10 +177,6 @@ export class CreateUserModalComponent {
       .subscribe((email) => {
         this.checkEmailDuplicate(email);
       });
-  }
-
-  trackById(_index: number, item: Role): number {
-    return item.id;
   }
 
   onEmailInput() {
