@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { User, UserPermissions } from '../../../auth/interfaces/auth.interface';
+import { User } from '../../../auth/interfaces/auth.interface';
 import { Role } from '../../../role-management/interfaces/role.interface';
 import { CommonModule } from '@angular/common';
 import { UserRepository } from '../../repository/user.repository';
@@ -10,7 +10,7 @@ import { CreateUserModalComponent } from '../../components/create-user-modal/cre
 import { EditUserModalComponent } from '../../components/edit-user-modal/edit-user-modal.component';
 import { RoleService } from '../../../role-management/services/role.service';
 import { RolePermissions } from '../../../../shared/enums';
-
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -19,6 +19,7 @@ import { RolePermissions } from '../../../../shared/enums';
     DeleteUserModalComponent,
     CreateUserModalComponent,
     EditUserModalComponent,
+    LoaderComponent,
   ],
   providers: [UserService, UserRepository],
   templateUrl: './users.component.html',
@@ -39,6 +40,7 @@ export class UsersComponent implements OnInit {
   error = signal('');
   rolePermissions = RolePermissions;
   currentUser = this.authService.userPermissions;
+  isLoading = signal(false);
 
   ngOnInit() {
     this.loadUsers();
@@ -46,12 +48,18 @@ export class UsersComponent implements OnInit {
   }
 
   loadUsers() {
+    this.isLoading.set(true);
+    this.error.set('');
     this.userService.getUsers().subscribe({
       next: (users) => {
         this.users.set(users);
         this.userCount.set(users.length);
+        this.isLoading.set(false);
       },
-      error: (error) => this.error.set(error.message),
+      error: (error) => {
+        this.error.set(error.message);
+        this.isLoading.set(false);
+      },
     });
   }
 
