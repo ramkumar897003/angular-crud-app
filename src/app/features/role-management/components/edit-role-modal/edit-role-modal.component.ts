@@ -25,10 +25,9 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
               >Permissions</label
             >
             <div class="mt-2 space-y-2">
-              <div
-                *ngFor="let permission of permissions; trackBy: trackById"
-                class="flex items-center"
-              >
+              @for (permission of permissions; track permission.id; let i =
+              $index) {
+              <div class="flex items-center">
                 <input
                   type="checkbox"
                   [checked]="selectedPermissions().includes(permission.id)"
@@ -45,6 +44,7 @@ import { ModalComponent } from '../../../../shared/components/modal/modal.compon
                   {{ permission.name }}
                 </label>
               </div>
+              }
             </div>
           </div>
         </div>
@@ -81,10 +81,6 @@ export class EditRoleModalComponent {
     if (this.role) {
       this.selectedPermissions.set(this.role.permissions.map((p) => p));
     }
-  }
-
-  trackById(_index: number, item: Permission): number {
-    return item.id;
   }
 
   onPermissionChange(event: Event, permissionId: number): void {

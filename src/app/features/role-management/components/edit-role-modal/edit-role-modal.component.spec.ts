@@ -121,12 +121,4 @@ describe('EditRoleModalComponent', () => {
       expect(component.cancel.emit).toHaveBeenCalled();
     });
   });
-
-  describe('trackById', () => {
-    it('should return permission id for tracking', () => {
-      expect(component.trackById(0, mockPermissions[0])).toBe(
-        mockPermissions[0].id
-      );
-    });
-  });
 });
