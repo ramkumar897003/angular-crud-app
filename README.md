@@ -1,27 +1,110 @@
 # AngularCrudApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.1.
+This project is a CRUD application built with Angular and json-server. It includes user management, role management, and authentication features.
 
-## Development server
+## Prerequisites
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+- Angular CLI (v18.2.1)
+- Git
 
-## Code scaffolding
+## Project Structure
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```
+angular-crud-app/
+├── src/                    # Angular frontend source code
+│   ├── app/
+│   │   ├── features/      # Feature modules
+│   │   │   ├── auth/      # Authentication
+│   │   │   ├── user-management/    # User management
+│   │   │   └── role-management/    # Role management
+│   │   ├── shared/        # Shared components and services
+│   │   └── core/          # Core module
+│   └── assets/            # Static assets
+└── server/                # json-server mock API
+    ├── db.json            # Database file
+    └── server.js          # Custom routes configuration and auth implementation
+```
 
-## Build
+## Important Restrictions
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### User Restrictions
 
-## Running unit tests
+- Users cannot edit or delete their own accounts
+- The default Super Admin user (ID: 1) cannot be edited or deleted
+- Only Super Admin users can manage other users' accounts
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Role Restrictions
 
-## Running end-to-end tests
+- The Super Admin role (ID: 1) cannot be edited or deleted
+- Only Super Admin users can manage roles
+- Role permissions cannot be modified for the Super Admin role
+- Any role with all permissions assigned will have Super Admin-like privileges
+- Exercise caution when assigning all permissions to a role as it grants full system access
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Default Super Admin Credentials
 
-## Further help
+- Email: john.doe@example.com
+- Password: 12345
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/ramkumar897003/angular-crud-app.git
+cd angular-crud-app
+```
+
+### 2. Install Dependencies
+
+#### Frontend (Angular)
+
+```bash
+# Install Angular dependencies
+npm install
+```
+
+### 3. Start the Development Servers
+
+#### Backend (json-server)
+
+```bash
+# Start json-server with custom server configuration
+node server/server.js
+```
+
+The json-server will run on `http://localhost:4201`
+
+#### Frontend Application
+
+```bash
+# In a new terminal, from the root directory
+ng serve
+```
+
+The Angular application will run on `http://localhost:4200`
+
+## Available Scripts
+
+### Frontend
+
+- `ng serve` - Start the development server
+- `ng build` - Build the application
+- `ng test` - Run unit tests
+
+### Backend (json-server)
+
+- `node server/server.js` - Start json-server with custom configuration
+- `json-server --watch server/db.json` - Start json-server with default configuration
+
+## Testing
+
+### Frontend Tests
+
+```bash
+# Run unit tests
+ng test
+
+```
