@@ -10,7 +10,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { RolePermissions } from '../../../../shared/enums';
 import { Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
-
+import { LoaderComponent } from '../../../../shared/components/loader/loader.component';
 @Component({
   selector: 'app-role-management',
   standalone: true,
@@ -20,6 +20,7 @@ import { map, Observable } from 'rxjs';
     CreateRoleModalComponent,
     EditRoleModalComponent,
     DeleteRoleModalComponent,
+    LoaderComponent,
   ],
   templateUrl: './roles.component.html',
 })
@@ -40,6 +41,7 @@ export class RolesComponent {
   selectedPermissions = signal<number[]>([]);
   rolePermissions = RolePermissions;
   currentUser = this.authService.userPermissions;
+  isLoading = signal(false);
 
   ngOnInit() {
     this.loadRoles();
@@ -47,12 +49,18 @@ export class RolesComponent {
   }
 
   loadRoles() {
+    this.isLoading.set(true);
+    this.error.set('');
     this.roleService.getRoles().subscribe({
       next: (roles) => {
         this.roles.set(roles);
         this.rolesCount.set(roles.length);
+        this.isLoading.set(false);
       },
-      error: (error) => this.error.set(error.message),
+      error: (error) => {
+        this.error.set(error.message);
+        this.isLoading.set(false);
+      },
     });
   }
 
