@@ -16,12 +16,17 @@ export class LoginComponent {
   password = signal('');
   rememberMe = signal(false);
   error = signal('');
+  isSubmitting = signal(false);
 
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   onSubmit() {
+    if (this.isSubmitting()) return;
+
     this.error.set('');
+    this.isSubmitting.set(true);
+
     this.authService
       .login({ email: this.email(), password: this.password() })
       .subscribe({
@@ -33,11 +38,13 @@ export class LoginComponent {
             },
             error: (error) => {
               this.error.set(error.message || 'Failed to get user data');
+              this.isSubmitting.set(false);
             },
           });
         },
         error: (error) => {
           this.error.set(error.message || 'An error occurred during login');
+          this.isSubmitting.set(false);
         },
       });
   }
